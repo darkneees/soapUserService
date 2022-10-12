@@ -1,0 +1,167 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://users-soap/api/"
+           targetNamespace="http://users-soap/api/"
+           elementFormDefault="qualified">
+
+    <xs:complexType name="socialInfo">
+        <xs:sequence>
+            <xs:element name="id" type="xs:long"/>
+            <xs:element name="nameSocial" type="xs:string"/>
+            <xs:element name="identifierSocial" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="userInfo">
+        <xs:sequence>
+            <xs:element name="username" type="xs:string"/>
+            <xs:element name="firstName" type="xs:string"/>
+            <xs:element name="secondName" type="xs:string"/>
+            <xs:element name="age" type="xs:int"/>
+            <xs:element name="password" type="xs:string"/>
+            <xs:element name="socialList" type="tns:socialInfo" maxOccurs="unbounded"/>
+            <xs:element name="roleList" type="tns:roleInfo" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="roleInfo">
+        <xs:sequence>
+            <xs:element name="id" type="xs:long"/>
+            <xs:element name="nameRole" type="xs:string"/>
+            <xs:element name="prettyNameRole" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="serviceStatus">
+        <xs:sequence>
+            <xs:element name="success" type="xs:boolean"/>
+            <xs:element name="errors" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="getAllUsersRequest">
+        <xs:complexType/>
+    </xs:element>
+
+    <xs:element name="getAllUsersResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="status" type="tns:serviceStatus"/>
+                <xs:element name="users" type="tns:userInfo" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getAllRolesRequest">
+        <xs:complexType/>
+    </xs:element>
+
+    <xs:element name="getAllRolesResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="status" type="tns:serviceStatus"/>
+                <xs:element name="roles" type="tns:roleInfo" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getUserByUsernameRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="username" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getUserByUsernameResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="status" type="tns:serviceStatus"/>
+                <xs:element name="users" type="tns:userInfo"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="addUserRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="user" type="tns:userInfo"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="addUserResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="serviceStatus" type="tns:serviceStatus"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="deleteUserByUsernameRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="username" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="deleteUserByUsernameResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="status" type="tns:serviceStatus"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="deleteRoleByUserRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="username" type="xs:string"/>
+                <xs:element name="role" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="deleteRoleByUserResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="status" type="tns:serviceStatus"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:element name="editUserByUsernameRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="username" type="xs:string"/>
+                <xs:element name="user" type="tns:userInfo"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="editUserByUsernameResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="status" type="tns:serviceStatus"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="addUserRolesRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="username" type="xs:string"/>
+                <xs:element name="role" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="addUserRolesResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="status" type="tns:serviceStatus"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>
