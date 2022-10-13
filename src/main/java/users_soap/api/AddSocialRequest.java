@@ -25,7 +25,8 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="user" type="{http://users-soap/api/}userInfo"/>
+ *         &lt;element name="username" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="social" type="{http://users-soap/api/}socialInfo"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -36,36 +37,63 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "user"
+    "username",
+    "social"
 })
-@XmlRootElement(name = "addUserRequest")
-public class AddUserRequest {
+@XmlRootElement(name = "addSocialRequest")
+public class AddSocialRequest {
 
     @XmlElement(required = true)
-    protected UserInfo user;
+    protected String username;
+    @XmlElement(required = true)
+    protected SocialInfo social;
 
     /**
-     * Gets the value of the user property.
+     * Gets the value of the username property.
      * 
      * @return
      *     possible object is
-     *     {@link UserInfo }
+     *     {@link String }
      *     
      */
-    public UserInfo getUser() {
-        return user;
+    public String getUsername() {
+        return username;
     }
 
     /**
-     * Sets the value of the user property.
+     * Sets the value of the username property.
      * 
      * @param value
      *     allowed object is
-     *     {@link UserInfo }
+     *     {@link String }
      *     
      */
-    public void setUser(UserInfo value) {
-        this.user = value;
+    public void setUsername(String value) {
+        this.username = value;
+    }
+
+    /**
+     * Gets the value of the social property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link SocialInfo }
+     *     
+     */
+    public SocialInfo getSocial() {
+        return social;
+    }
+
+    /**
+     * Sets the value of the social property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link SocialInfo }
+     *     
+     */
+    public void setSocial(SocialInfo value) {
+        this.social = value;
     }
 
 }

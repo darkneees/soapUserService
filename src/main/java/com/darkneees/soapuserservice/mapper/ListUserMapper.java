@@ -12,6 +12,8 @@ import java.util.List;
 public interface ListUserMapper {
 
     ListUserMapper INSTANCE = Mappers.getMapper(ListUserMapper.class);
+    @Mapping(target = "socialList", ignore = true)
+    @Mapping(target = "roleList", ignore = true)
     List<UserInfo> toListUserInfos(Iterable<User> users);
 
 }

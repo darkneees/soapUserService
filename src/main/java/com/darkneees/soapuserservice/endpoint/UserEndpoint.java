@@ -1,8 +1,6 @@
 package com.darkneees.soapuserservice.endpoint;
 
-import com.darkneees.soapuserservice.mapper.ListUserMapper;
-import com.darkneees.soapuserservice.mapper.RoleListMapper;
-import com.darkneees.soapuserservice.mapper.UserMapper;
+import com.darkneees.soapuserservice.mapper.*;
 import com.darkneees.soapuserservice.service.RoleServiceImpl;
 import com.darkneees.soapuserservice.service.UserServiceImpl;
 import org.slf4j.Logger;
@@ -57,8 +55,6 @@ public class UserEndpoint {
                     ServiceStatus serviceStatus = new ServiceStatus();
                     serviceStatus.setSuccess(true);
 
-
-
                     GetAllRolesResponse response = new GetAllRolesResponse();
                     response.setStatus(serviceStatus);
                     response.getRoles().addAll(RoleListMapper.INSTANCE.toRoleInfo(roles.join()));
@@ -98,7 +94,7 @@ public class UserEndpoint {
     @ResponsePayload
     public GetUserByUsernameResponse getUserByUsername(@RequestPayload GetUserByUsernameRequest request) {
 
-        return CompletableFuture.supplyAsync(() -> userService.getUserByUsername(request.getUsername()))
+        return CompletableFuture.supplyAsync(() -> userService.getUserByUsernameService(request.getUsername()))
                 .thenApply((user) -> {
 
                     log.info("getUserByUsername");
@@ -110,6 +106,16 @@ public class UserEndpoint {
                     response.setUsers(UserMapper.INSTANCE.toUserInfo(user.join()));
                     return response;
 
+                })
+                .exceptionally((ex) -> {
+                    ServiceStatus serviceStatus = new ServiceStatus();
+                    serviceStatus.setSuccess(false);
+                    serviceStatus.setErrors(ex.getMessage());
+
+                    GetUserByUsernameResponse response = new GetUserByUsernameResponse();
+                    response.setStatus(serviceStatus);
+
+                    return response;
                 }).join();
     }
 
@@ -125,9 +131,18 @@ public class UserEndpoint {
                     serviceStatus.setSuccess(true);
 
                     response.setStatus(serviceStatus);
-
                     return response;
 
+                })
+                .exceptionally((ex) -> {
+                    ServiceStatus serviceStatus = new ServiceStatus();
+                    serviceStatus.setSuccess(false);
+                    serviceStatus.setErrors(ex.getMessage());
+
+                    DeleteUserByUsernameResponse response = new DeleteUserByUsernameResponse();
+                    response.setStatus(serviceStatus);
+
+                    return response;
                 }).join();
     }
 
@@ -146,6 +161,16 @@ public class UserEndpoint {
                     DeleteRoleByUserResponse response = new DeleteRoleByUserResponse();
                     response.setStatus(serviceStatus);
                     return response;
+                })
+                .exceptionally((ex) -> {
+                    ServiceStatus serviceStatus = new ServiceStatus();
+                    serviceStatus.setSuccess(false);
+                    serviceStatus.setErrors(ex.getMessage());
+
+                    DeleteRoleByUserResponse response = new DeleteRoleByUserResponse();
+                    response.setStatus(serviceStatus);
+
+                    return response;
                 }).join();
     }
 
@@ -162,6 +187,113 @@ public class UserEndpoint {
             AddUserRolesResponse response = new AddUserRolesResponse();
             response.setStatus(serviceStatus);
             return response;
-        }).join();
+        })
+                .exceptionally((ex) -> {
+                    ServiceStatus serviceStatus = new ServiceStatus();
+                    serviceStatus.setSuccess(false);
+                    serviceStatus.setErrors(ex.getMessage());
+
+                    AddUserRolesResponse response = new AddUserRolesResponse();
+                    response.setStatus(serviceStatus);
+
+                    return response;
+                }).join();
+    }
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "addRoleRequest")
+    @ResponsePayload
+    public AddRoleResponse addRole(@RequestPayload AddRoleRequest request) {
+        return CompletableFuture.supplyAsync(() -> roleService.createRole(RoleMapper.INSTANCE.toRole(request.getRoles())))
+                .thenApply(f -> {
+
+                    ServiceStatus serviceStatus = new ServiceStatus();
+                    serviceStatus.setSuccess(true);
+                    AddRoleResponse response = new AddRoleResponse();
+                    response.setStatus(serviceStatus);
+                    return response;
+                })
+                .exceptionally((ex) -> {
+                    ServiceStatus serviceStatus = new ServiceStatus();
+                    serviceStatus.setSuccess(false);
+                    serviceStatus.setErrors(ex.getMessage());
+
+                    AddRoleResponse response = new AddRoleResponse();
+                    response.setStatus(serviceStatus);
+
+                    return response;
+                }).join();
+    }
+
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "editUserByUsernameRequest")
+    @ResponsePayload
+    public EditUserByUsernameResponse editUserByUsername(@RequestPayload EditUserByUsernameRequest request) {
+        return CompletableFuture.supplyAsync(() -> userService.editUser(UserMapper.INSTANCE.toUser(request.getUser())))
+                .thenApply(f -> {
+
+                    ServiceStatus serviceStatus = new ServiceStatus();
+                    serviceStatus.setSuccess(true);
+                    EditUserByUsernameResponse response = new EditUserByUsernameResponse();
+                    response.setStatus(serviceStatus);
+                    return response;
+                }).exceptionally((ex) -> {
+
+                    ServiceStatus serviceStatus = new ServiceStatus();
+                    serviceStatus.setSuccess(false);
+                    serviceStatus.setErrors(ex.getMessage());
+
+                    EditUserByUsernameResponse response = new EditUserByUsernameResponse();
+                    response.setStatus(serviceStatus);
+
+                    return response;
+                }).join();
+    }
+
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "addSocialRequest")
+    @ResponsePayload
+    public AddSocialResponse addSocial(@RequestPayload AddSocialRequest request) {
+        return CompletableFuture.supplyAsync(() -> userService.addSocial(SocialMapper.INSTANCE.toSocial(request.getSocial()), request.getUsername()))
+                .thenApply(f -> {
+
+                    ServiceStatus serviceStatus = new ServiceStatus();
+                    serviceStatus.setSuccess(true);
+
+                    AddSocialResponse response = new AddSocialResponse();
+                    response.setStatus(serviceStatus);
+                    return response;
+                })
+                .exceptionally((ex) -> {
+                    ServiceStatus serviceStatus = new ServiceStatus();
+                    serviceStatus.setSuccess(false);
+                    serviceStatus.setErrors(ex.getMessage());
+
+                    AddSocialResponse response = new AddSocialResponse();
+                    response.setStatus(serviceStatus);
+
+                    return response;
+                }).join();
+    }
+
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "deleteSocialRequest")
+    @ResponsePayload
+    public DeleteSocialResponse deleteSocial(@RequestPayload DeleteSocialRequest request) {
+        return CompletableFuture.supplyAsync(() -> userService.deleteSocial(request.getIdentifierSocial(), request.getUsername()))
+                .thenApply( f -> {
+
+                    ServiceStatus serviceStatus = new ServiceStatus();
+                    serviceStatus.setSuccess(true);
+
+                    DeleteSocialResponse response = new DeleteSocialResponse();
+                    response.setStatus(serviceStatus);
+                    return response;
+                })
+                .exceptionally((ex) -> {
+                    ServiceStatus serviceStatus = new ServiceStatus();
+                    serviceStatus.setSuccess(false);
+                    serviceStatus.setErrors(ex.getMessage());
+
+                    DeleteSocialResponse response = new DeleteSocialResponse();
+                    response.setStatus(serviceStatus);
+                    return response;
+
+                }).join();
     }
 }

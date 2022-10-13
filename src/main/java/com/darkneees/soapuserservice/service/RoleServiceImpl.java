@@ -22,4 +22,9 @@ public class RoleServiceImpl implements RoleService {
     public CompletableFuture<Iterable<Role>> getAllRoles() {
         return CompletableFuture.completedFuture(roleRepository.findAll());
     }
+
+    @Override
+    public CompletableFuture<Role> createRole(Role role) {
+        return CompletableFuture.completedFuture(roleRepository.save(role));
+    }
 }

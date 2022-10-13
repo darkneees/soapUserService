@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="user" type="{http://users-soap/api/}userInfo"/>
+ *         &lt;element name="status" type="{http://users-soap/api/}serviceStatus"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -36,36 +36,36 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "user"
+    "status"
 })
-@XmlRootElement(name = "addUserRequest")
-public class AddUserRequest {
+@XmlRootElement(name = "deleteSocialResponse")
+public class DeleteSocialResponse {
 
     @XmlElement(required = true)
-    protected UserInfo user;
+    protected ServiceStatus status;
 
     /**
-     * Gets the value of the user property.
+     * Gets the value of the status property.
      * 
      * @return
      *     possible object is
-     *     {@link UserInfo }
+     *     {@link ServiceStatus }
      *     
      */
-    public UserInfo getUser() {
-        return user;
+    public ServiceStatus getStatus() {
+        return status;
     }
 
     /**
-     * Sets the value of the user property.
+     * Sets the value of the status property.
      * 
      * @param value
      *     allowed object is
-     *     {@link UserInfo }
+     *     {@link ServiceStatus }
      *     
      */
-    public void setUser(UserInfo value) {
-        this.user = value;
+    public void setStatus(ServiceStatus value) {
+        this.status = value;
     }
 
 }

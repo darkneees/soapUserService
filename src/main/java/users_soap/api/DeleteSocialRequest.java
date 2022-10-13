@@ -25,7 +25,8 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="user" type="{http://users-soap/api/}userInfo"/>
+ *         &lt;element name="username" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="identifierSocial" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -36,36 +37,63 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "user"
+    "username",
+    "identifierSocial"
 })
-@XmlRootElement(name = "addUserRequest")
-public class AddUserRequest {
+@XmlRootElement(name = "deleteSocialRequest")
+public class DeleteSocialRequest {
 
     @XmlElement(required = true)
-    protected UserInfo user;
+    protected String username;
+    @XmlElement(required = true)
+    protected String identifierSocial;
 
     /**
-     * Gets the value of the user property.
+     * Gets the value of the username property.
      * 
      * @return
      *     possible object is
-     *     {@link UserInfo }
+     *     {@link String }
      *     
      */
-    public UserInfo getUser() {
-        return user;
+    public String getUsername() {
+        return username;
     }
 
     /**
-     * Sets the value of the user property.
+     * Sets the value of the username property.
      * 
      * @param value
      *     allowed object is
-     *     {@link UserInfo }
+     *     {@link String }
      *     
      */
-    public void setUser(UserInfo value) {
-        this.user = value;
+    public void setUsername(String value) {
+        this.username = value;
+    }
+
+    /**
+     * Gets the value of the identifierSocial property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getIdentifierSocial() {
+        return identifierSocial;
+    }
+
+    /**
+     * Sets the value of the identifierSocial property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setIdentifierSocial(String value) {
+        this.identifierSocial = value;
     }
 
 }

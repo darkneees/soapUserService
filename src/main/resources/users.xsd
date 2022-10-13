@@ -133,7 +133,6 @@
     <xs:element name="editUserByUsernameRequest">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="username" type="xs:string"/>
                 <xs:element name="user" type="tns:userInfo"/>
             </xs:sequence>
         </xs:complexType>
@@ -160,6 +159,56 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="status" type="tns:serviceStatus"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="addRoleRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element type="tns:roleInfo" name="roles"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="addRoleResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element type="tns:serviceStatus" name="status"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="addSocialRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element type="xs:string" name="username"/>
+                <xs:element type="tns:socialInfo" name="social"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="addSocialResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element type="tns:serviceStatus" name="status"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="deleteSocialRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element type="xs:string" name="username"/>
+                <xs:element type="xs:string" name="identifierSocial"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="deleteSocialResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element type="tns:serviceStatus" name="status"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>

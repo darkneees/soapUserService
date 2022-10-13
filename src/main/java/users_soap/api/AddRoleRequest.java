@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="user" type="{http://users-soap/api/}userInfo"/>
+ *         &lt;element name="roles" type="{http://users-soap/api/}roleInfo"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -36,36 +36,36 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "user"
+    "roles"
 })
-@XmlRootElement(name = "addUserRequest")
-public class AddUserRequest {
+@XmlRootElement(name = "addRoleRequest")
+public class AddRoleRequest {
 
     @XmlElement(required = true)
-    protected UserInfo user;
+    protected RoleInfo roles;
 
     /**
-     * Gets the value of the user property.
+     * Gets the value of the roles property.
      * 
      * @return
      *     possible object is
-     *     {@link UserInfo }
+     *     {@link RoleInfo }
      *     
      */
-    public UserInfo getUser() {
-        return user;
+    public RoleInfo getRoles() {
+        return roles;
     }
 
     /**
-     * Sets the value of the user property.
+     * Sets the value of the roles property.
      * 
      * @param value
      *     allowed object is
-     *     {@link UserInfo }
+     *     {@link RoleInfo }
      *     
      */
-    public void setUser(UserInfo value) {
-        this.user = value;
+    public void setRoles(RoleInfo value) {
+        this.roles = value;
     }
 
 }

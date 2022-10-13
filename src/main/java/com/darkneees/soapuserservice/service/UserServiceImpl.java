@@ -2,6 +2,7 @@ package com.darkneees.soapuserservice.service;
 
 import com.darkneees.soapuserservice.entity.Role;
 import com.darkneees.soapuserservice.entity.RoleRef;
+import com.darkneees.soapuserservice.entity.Social;
 import com.darkneees.soapuserservice.entity.User;
 import com.darkneees.soapuserservice.exception.UserNotFoundException;
 import com.darkneees.soapuserservice.repository.RoleRepository;
@@ -24,9 +25,7 @@ public class UserServiceImpl implements UserService {
         this.roleRepository = roleRepository;
     }
 
-    @Override
-    public CompletableFuture<User> getUserByUsername(String username) {
-        return CompletableFuture.supplyAsync(() -> {
+    private User getUserByUsername(String username) {
             Optional<User> opt = userRepository.findById(username);
             if(opt.isPresent()) {
                 User user = opt.get();
@@ -37,7 +36,6 @@ public class UserServiceImpl implements UserService {
 
                 return user;
             } else throw new UserNotFoundException(username);
-        });
     }
 
     @Override
@@ -48,8 +46,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Async
-    public CompletableFuture<User> editUser(User user) {
-        return CompletableFuture.completedFuture(userRepository.save(user));
+    public CompletableFuture<Void> editUser(User user) {
+        return CompletableFuture.runAsync(() -> {
+            User oldUser = getUserByUsername(user.getUsername());
+            user.setRoleRefSet(oldUser.getRoleRefSet());
+            user.setSocialSet(oldUser.getSocialSet());
+            userRepository.save(user);
+        });
     }
 
     @Override
@@ -67,7 +70,7 @@ public class UserServiceImpl implements UserService {
     @Async
     public CompletableFuture<Void> deleteRoleByUsername(String username, Long id) {
         return CompletableFuture.runAsync(() -> {
-            User user = getUserByUsername(username).join();
+            User user = getUserByUsername(username);
             user.setNew(false);
             user.getRoleRefSet().remove(new RoleRef(id));
             userRepository.save(user);
@@ -84,9 +87,37 @@ public class UserServiceImpl implements UserService {
     @Async
     public CompletableFuture<Void> addRole(String username, long role) {
         return CompletableFuture.runAsync(() -> {
-            User user = getUserByUsername(username).join();
+            User user = getUserByUsername(username);
             user.getRoleRefSet().add(new RoleRef(role));
             userRepository.save(user);
         });
     }
+
+    @Override
+    @Async
+    public CompletableFuture<User> getUserByUsernameService(String username) {
+        return CompletableFuture.completedFuture(getUserByUsername(username));
+    }
+
+    @Override
+    public CompletableFuture<Void> addSocial(Social social, String username) {
+        return CompletableFuture.runAsync(() -> {
+            User user = getUserByUsername(username);
+            user.getSocialSet().add(social);
+
+            userRepository.save(user);
+        });
+    }
+
+    @Override
+    public CompletableFuture<Void> deleteSocial(String identifierSocial, String username) {
+        return CompletableFuture.runAsync(() -> {
+            User user = getUserByUsername(username);
+            user.getSocialSet().removeIf((ef) -> ef.getIdentifierSocial().equals(identifierSocial));
+
+            userRepository.save(user);
+        });
+    }
+
+
 }

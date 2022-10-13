@@ -146,7 +146,7 @@ class SoapUserServiceImplApplicationTests {
     @Test
     @Disabled
     public void findByUsername(){
-        User user = userService.getUserByUsername("darkneees").join();
+        User user = userService.getUserByUsernameService("darkneees").join();
 
         log.info(user.toString());
         assertEquals(user.getSocialSet().size(), 3);
@@ -240,7 +240,7 @@ class SoapUserServiceImplApplicationTests {
     @Disabled
     public void GetUserWithRoles() {
 
-        User user = userService.getUserByUsername("darkneees1").join();
+        User user = userService.getUserByUsernameService("darkneees1").join();
         System.out.println(user);
 
 
