@@ -1,12 +1,15 @@
 package com.darkneees.soapuserservice.service;
 
+import com.darkneees.soapuserservice.endpoint.UserEndpoint;
 import com.darkneees.soapuserservice.entity.Role;
 import com.darkneees.soapuserservice.entity.RoleRef;
 import com.darkneees.soapuserservice.entity.Social;
 import com.darkneees.soapuserservice.entity.User;
-import com.darkneees.soapuserservice.exception.UserNotFoundException;
+import com.darkneees.soapuserservice.exception.*;
 import com.darkneees.soapuserservice.repository.RoleRepository;
 import com.darkneees.soapuserservice.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +19,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    private static final Logger log = LoggerFactory.getLogger(UserEndpoint.class);
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -40,8 +45,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Async
-    public CompletableFuture<User> saveUser(User user) {
-        return CompletableFuture.completedFuture(userRepository.save(user));
+    public CompletableFuture<Void> addUser(User user) {
+        return CompletableFuture.runAsync(() -> {
+            if(userRepository.existsById(user.getUsername()))
+                userRepository.save(user);
+            else throw new UserAlreadyExistException(user.getUsername());
+        });
     }
 
     @Override
@@ -58,12 +67,15 @@ public class UserServiceImpl implements UserService {
     @Override
     @Async
     public CompletableFuture<Void> deleteUserByUsername(String username) {
-        return CompletableFuture.runAsync(() -> userRepository.deleteById(username));
+        return CompletableFuture.runAsync(() -> {
+            if(userRepository.findById(username).isPresent()) userRepository.deleteById(username);
+            else throw new UserNotFoundException(username);
+        });
     }
     @Override
     @Async
     public CompletableFuture<Iterable<User>> getAllUsers() {
-        return CompletableFuture.completedFuture(userRepository.findAll());
+        return CompletableFuture.supplyAsync(userRepository::findAll);
     }
 
     @Override
@@ -72,8 +84,8 @@ public class UserServiceImpl implements UserService {
         return CompletableFuture.runAsync(() -> {
             User user = getUserByUsername(username);
             user.setNew(false);
-            user.getRoleRefSet().remove(new RoleRef(id));
-            userRepository.save(user);
+            if(user.getRoleRefSet().remove(new RoleRef(id))) userRepository.save(user);
+            else throw new UserRoleNotFoundException(username, id);
         });
     }
 
@@ -88,15 +100,18 @@ public class UserServiceImpl implements UserService {
     public CompletableFuture<Void> addRole(String username, long role) {
         return CompletableFuture.runAsync(() -> {
             User user = getUserByUsername(username);
-            user.getRoleRefSet().add(new RoleRef(role));
-            userRepository.save(user);
+            if(roleRepository.findById(role).isPresent()) {
+                user.getRoleRefSet().add(new RoleRef(role));
+                userRepository.save(user);
+            } else throw new RoleNotFoundException(role);
+
         });
     }
 
     @Override
     @Async
     public CompletableFuture<User> getUserByUsernameService(String username) {
-        return CompletableFuture.completedFuture(getUserByUsername(username));
+        return CompletableFuture.supplyAsync(() -> getUserByUsername(username));
     }
 
     @Override
@@ -104,7 +119,6 @@ public class UserServiceImpl implements UserService {
         return CompletableFuture.runAsync(() -> {
             User user = getUserByUsername(username);
             user.getSocialSet().add(social);
-
             userRepository.save(user);
         });
     }
@@ -113,9 +127,9 @@ public class UserServiceImpl implements UserService {
     public CompletableFuture<Void> deleteSocial(String identifierSocial, String username) {
         return CompletableFuture.runAsync(() -> {
             User user = getUserByUsername(username);
-            user.getSocialSet().removeIf((ef) -> ef.getIdentifierSocial().equals(identifierSocial));
-
-            userRepository.save(user);
+            if(user.getSocialSet()
+                    .removeIf((ef) -> ef.getIdentifierSocial().equals(identifierSocial))) userRepository.save(user);
+            else throw new SocialNotFoundException(identifierSocial);
         });
     }
 

@@ -8,5 +8,5 @@ import java.util.concurrent.CompletableFuture;
 public interface RoleService {
 
     CompletableFuture<Iterable<Role>> getAllRoles();
-    CompletableFuture<Role> createRole(Role role);
+    CompletableFuture<Void> createRole(Role role);
 }

@@ -6,7 +6,7 @@ import com.darkneees.soapuserservice.entity.User;
 import java.util.concurrent.CompletableFuture;
 
 public interface UserService {
-    CompletableFuture<User> saveUser(User user);
+    CompletableFuture<Void> addUser(User user);
     CompletableFuture<Void> editUser(User user);
     CompletableFuture<Void> deleteUserByUsername(String username);
     CompletableFuture<Iterable<User>> getAllUsers();

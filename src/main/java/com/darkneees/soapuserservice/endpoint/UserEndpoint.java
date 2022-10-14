@@ -11,8 +11,6 @@ import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 import users_soap.api.*;
 
-import java.util.concurrent.CompletableFuture;
-
 @Endpoint
 public class UserEndpoint {
 
@@ -30,16 +28,15 @@ public class UserEndpoint {
     @ResponsePayload
     public GetAllUsersResponse getAllUsers() {
 
-        return CompletableFuture.supplyAsync(userService::getAllUsers)
+        return userService.getAllUsers()
                 .thenApply((users) -> {
 
-                    log.info("getAllUsers");
                     ServiceStatus serviceStatus = new ServiceStatus();
                     serviceStatus.setSuccess(true);
 
                     GetAllUsersResponse response = new GetAllUsersResponse();
                     response.setStatus(serviceStatus);
-                    response.getUsers().addAll(ListUserMapper.INSTANCE.toListUserInfos(users.join()));
+                    response.getUsers().addAll(ListUserMapper.INSTANCE.toListUserInfos(users));
                     return response;
                 }).join();
     }
@@ -48,16 +45,15 @@ public class UserEndpoint {
     @ResponsePayload
     public GetAllRolesResponse getAllRoles(){
 
-        return CompletableFuture.supplyAsync(roleService::getAllRoles)
+        return roleService.getAllRoles()
                 .thenApply((roles) -> {
 
-                    log.info("getAllRoles");
                     ServiceStatus serviceStatus = new ServiceStatus();
                     serviceStatus.setSuccess(true);
 
                     GetAllRolesResponse response = new GetAllRolesResponse();
                     response.setStatus(serviceStatus);
-                    response.getRoles().addAll(RoleListMapper.INSTANCE.toRoleInfo(roles.join()));
+                    response.getRoles().addAll(RoleListMapper.INSTANCE.toRoleInfo(roles));
                     return response;
 
                 }).join();
@@ -68,9 +64,9 @@ public class UserEndpoint {
     @ResponsePayload
     public AddUserResponse addUser(@RequestPayload AddUserRequest request) {
 
-        return CompletableFuture.supplyAsync(() -> userService.saveUser(UserMapper.INSTANCE.toNewUser(request.getUser())))
+        return userService.addUser(UserMapper.INSTANCE.toNewUser(request.getUser()))
                 .thenApply(f -> {
-                    log.info(UserMapper.INSTANCE.toNewUser(request.getUser()).toString());
+
                     ServiceStatus serviceStatus = new ServiceStatus();
                     serviceStatus.setSuccess(true);
 
@@ -94,7 +90,7 @@ public class UserEndpoint {
     @ResponsePayload
     public GetUserByUsernameResponse getUserByUsername(@RequestPayload GetUserByUsernameRequest request) {
 
-        return CompletableFuture.supplyAsync(() -> userService.getUserByUsernameService(request.getUsername()))
+        return userService.getUserByUsernameService(request.getUsername())
                 .thenApply((user) -> {
 
                     log.info("getUserByUsername");
@@ -103,7 +99,7 @@ public class UserEndpoint {
 
                     GetUserByUsernameResponse response = new GetUserByUsernameResponse();
                     response.setStatus(serviceStatus);
-                    response.setUsers(UserMapper.INSTANCE.toUserInfo(user.join()));
+                    response.setUsers(UserMapper.INSTANCE.toUserInfo(user));
                     return response;
 
                 })
@@ -123,7 +119,7 @@ public class UserEndpoint {
     @ResponsePayload
     public DeleteUserByUsernameResponse deleteUserByUsername(@RequestPayload DeleteUserByUsernameRequest request) {
 
-        return CompletableFuture.supplyAsync(() -> userService.deleteUserByUsername(request.getUsername()))
+        return userService.deleteUserByUsername(request.getUsername())
                 .thenApply(f -> {
 
                     DeleteUserByUsernameResponse response = new DeleteUserByUsernameResponse();
@@ -135,6 +131,7 @@ public class UserEndpoint {
 
                 })
                 .exceptionally((ex) -> {
+
                     ServiceStatus serviceStatus = new ServiceStatus();
                     serviceStatus.setSuccess(false);
                     serviceStatus.setErrors(ex.getMessage());
@@ -150,9 +147,8 @@ public class UserEndpoint {
     @ResponsePayload
     public DeleteRoleByUserResponse deleteRoleByUser(@RequestPayload DeleteRoleByUserRequest request) {
 
-        return CompletableFuture.supplyAsync(() ->
-                        userService.deleteRoleByUsername(request.getUsername(),
-                                request.getRole()))
+        return userService.deleteRoleByUsername(request.getUsername(),
+                                request.getRole())
                 .thenApply(f -> {
 
                     ServiceStatus serviceStatus = new ServiceStatus();
@@ -178,8 +174,8 @@ public class UserEndpoint {
     @ResponsePayload
     public AddUserRolesResponse addUserRoles(@RequestPayload AddUserRolesRequest request) {
 
-        return CompletableFuture.supplyAsync(() ->
-            userService.addRole(request.getUsername(), request.getRole())).thenApply(f -> {
+        return userService.addRole(request.getUsername(), request.getRole())
+                .thenApply(f -> {
 
             ServiceStatus serviceStatus = new ServiceStatus();
             serviceStatus.setSuccess(true);
@@ -202,7 +198,7 @@ public class UserEndpoint {
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "addRoleRequest")
     @ResponsePayload
     public AddRoleResponse addRole(@RequestPayload AddRoleRequest request) {
-        return CompletableFuture.supplyAsync(() -> roleService.createRole(RoleMapper.INSTANCE.toRole(request.getRoles())))
+        return roleService.createRole(RoleMapper.INSTANCE.toRole(request.getRoles()))
                 .thenApply(f -> {
 
                     ServiceStatus serviceStatus = new ServiceStatus();
@@ -226,7 +222,7 @@ public class UserEndpoint {
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "editUserByUsernameRequest")
     @ResponsePayload
     public EditUserByUsernameResponse editUserByUsername(@RequestPayload EditUserByUsernameRequest request) {
-        return CompletableFuture.supplyAsync(() -> userService.editUser(UserMapper.INSTANCE.toUser(request.getUser())))
+        return userService.editUser(UserMapper.INSTANCE.toUser(request.getUser()))
                 .thenApply(f -> {
 
                     ServiceStatus serviceStatus = new ServiceStatus();
@@ -250,7 +246,7 @@ public class UserEndpoint {
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "addSocialRequest")
     @ResponsePayload
     public AddSocialResponse addSocial(@RequestPayload AddSocialRequest request) {
-        return CompletableFuture.supplyAsync(() -> userService.addSocial(SocialMapper.INSTANCE.toSocial(request.getSocial()), request.getUsername()))
+        return userService.addSocial(SocialMapper.INSTANCE.toSocial(request.getSocial()), request.getUsername())
                 .thenApply(f -> {
 
                     ServiceStatus serviceStatus = new ServiceStatus();
@@ -275,7 +271,7 @@ public class UserEndpoint {
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "deleteSocialRequest")
     @ResponsePayload
     public DeleteSocialResponse deleteSocial(@RequestPayload DeleteSocialRequest request) {
-        return CompletableFuture.supplyAsync(() -> userService.deleteSocial(request.getIdentifierSocial(), request.getUsername()))
+        return userService.deleteSocial(request.getIdentifierSocial(), request.getUsername())
                 .thenApply( f -> {
 
                     ServiceStatus serviceStatus = new ServiceStatus();
