@@ -1,4 +1,4 @@
-package com.darkneees.soapuserservice.service;
+package com.darkneees.soapuserservice.exception;
 
 public class RoleAlreadyExistException extends RuntimeException {
     public RoleAlreadyExistException(Long id) {

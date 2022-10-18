@@ -1,5 +1,6 @@
 package com.darkneees.soapuserservice.endpoint;
 
+import com.darkneees.soapuserservice.exception.UserAlreadyExistException;
 import com.darkneees.soapuserservice.mapper.*;
 import com.darkneees.soapuserservice.service.RoleServiceImpl;
 import com.darkneees.soapuserservice.service.UserServiceImpl;
@@ -10,6 +11,8 @@ import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 import users_soap.api.*;
+
+import java.util.function.Function;
 
 @Endpoint
 public class UserEndpoint {
@@ -75,13 +78,12 @@ public class UserEndpoint {
                     return response;
                 })
                 .exceptionally((ex) -> {
+            AddUserResponse response = new AddUserResponse();
             ServiceStatus serviceStatus = new ServiceStatus();
             serviceStatus.setSuccess(false);
             serviceStatus.setErrors(ex.getMessage());
 
-            AddUserResponse response = new AddUserResponse();
             response.setServiceStatus(serviceStatus);
-
             return response;
         }).join();
     }
@@ -288,8 +290,18 @@ public class UserEndpoint {
 
                     DeleteSocialResponse response = new DeleteSocialResponse();
                     response.setStatus(serviceStatus);
-                    return response;
 
+                    return response;
                 }).join();
     }
+
+//    private static final Function<Throwable, ? extends DeleteSocialResponse>
+//        serviceStatusException = throwable -> {
+//            ServiceStatus serviceStatus = new ServiceStatus();
+//            serviceStatus.setSuccess(true);
+//            serviceStatus.setErrors(throwable.getMessage());
+//            DeleteSocialResponse response = new DeleteSocialResponse();
+//            response.setStatus(serviceStatus);
+//            return response;
+//    };
 }

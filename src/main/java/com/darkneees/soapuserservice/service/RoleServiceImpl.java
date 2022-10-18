@@ -2,17 +2,13 @@ package com.darkneees.soapuserservice.service;
 
 
 import com.darkneees.soapuserservice.entity.Role;
-import com.darkneees.soapuserservice.entity.RoleRef;
-import com.darkneees.soapuserservice.entity.User;
+import com.darkneees.soapuserservice.exception.RoleAlreadyExistException;
 import com.darkneees.soapuserservice.exception.RoleNotFoundException;
-import com.darkneees.soapuserservice.exception.UserNotFoundException;
 import com.darkneees.soapuserservice.repository.RoleRepository;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 @Service
 public class RoleServiceImpl implements RoleService {

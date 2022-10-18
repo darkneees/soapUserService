@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
     @Async
     public CompletableFuture<Void> addUser(User user) {
         return CompletableFuture.runAsync(() -> {
-            if(userRepository.existsById(user.getUsername()))
+            if(!userRepository.existsById(user.getUsername()))
                 userRepository.save(user);
             else throw new UserAlreadyExistException(user.getUsername());
         });
@@ -57,9 +57,7 @@ public class UserServiceImpl implements UserService {
     @Async
     public CompletableFuture<Void> editUser(User user) {
         return CompletableFuture.runAsync(() -> {
-            User oldUser = getUserByUsername(user.getUsername());
-            user.setRoleRefSet(oldUser.getRoleRefSet());
-            user.setSocialSet(oldUser.getSocialSet());
+            System.out.println(user.getRoleRefSet().toString());
             userRepository.save(user);
         });
     }

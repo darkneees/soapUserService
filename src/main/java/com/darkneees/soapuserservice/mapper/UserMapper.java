@@ -3,6 +3,7 @@ package com.darkneees.soapuserservice.mapper;
 import com.darkneees.soapuserservice.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 import users_soap.api.UserInfo;
 
@@ -19,7 +20,12 @@ public interface UserMapper {
     @Mapping(target = "new", constant = "true")
     User toNewUser(UserInfo info);
 
-    @Mapping(source = "user.roleSet", target = "roleList")
+    @Mapping(source= "user.roleSet", target = "roleList")
     @Mapping(source = "user.socialSet", target = "socialList")
+    @Named("clearUser")
     UserInfo toUserInfo(User user);
+
+    @Mapping(target = "roleList", ignore = true)
+    @Mapping(target = "socialList", ignore = true)
+    UserInfo toUserInfoWithoutRolesAndSocials(User user);
 }
