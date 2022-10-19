@@ -1,0 +1,25 @@
+version: '3'
+services:
+
+  backend-soap-server:
+    build: ./
+    container_name: backend-soap-server
+    ports:
+      - 8080:8080
+    environment:
+      - DATABASE_URL=jdbc:postgresql://database-soap:5432/usersSoap
+      - DATABASE_USERNAME=root
+      - DATABASE_PASSWORD=root
+
+
+  database-soap:
+    image: 'onjin/alpine-postgres:9.6.19'
+    container_name: database-soap
+    environment:
+      - POSTGRES_DB=usersSoap
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    ports:
+      - 5402:5402
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
