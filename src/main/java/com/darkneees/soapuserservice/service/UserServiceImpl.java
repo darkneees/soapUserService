@@ -57,6 +57,9 @@ public class UserServiceImpl implements UserService {
     @Async
     public CompletableFuture<Void> editUser(User user) {
         return CompletableFuture.runAsync(() -> {
+            user.getRoleRefSet().addAll(user.getRoleSet().stream()
+                    .map((el) -> new RoleRef(el.getId()))
+                    .collect(Collectors.toSet()));
             System.out.println(user.getRoleRefSet().toString());
             userRepository.save(user);
         });
