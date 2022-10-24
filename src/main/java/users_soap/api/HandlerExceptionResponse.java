@@ -10,6 +10,7 @@ package users_soap.api;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -23,6 +24,9 @@ import javax.xml.bind.annotation.XmlType;
  * &lt;complexType>
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *       &lt;sequence>
+ *         &lt;element name="status" type="{http://users-soap/api/}serviceStatus"/>
+ *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -31,9 +35,37 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "")
-@XmlRootElement(name = "getAllRolesRequest")
-public class GetAllRolesRequest {
+@XmlType(name = "", propOrder = {
+    "status"
+})
+@XmlRootElement(name = "handlerExceptionResponse")
+public class HandlerExceptionResponse {
 
+    @XmlElement(required = true)
+    protected ServiceStatus status;
+
+    /**
+     * Gets the value of the status property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link ServiceStatus }
+     *     
+     */
+    public ServiceStatus getStatus() {
+        return status;
+    }
+
+    /**
+     * Sets the value of the status property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link ServiceStatus }
+     *     
+     */
+    public void setStatus(ServiceStatus value) {
+        this.status = value;
+    }
 
 }

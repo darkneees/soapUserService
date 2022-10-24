@@ -3,6 +3,9 @@ package com.darkneees.soapuserservice;
 import com.darkneees.soapuserservice.entity.Role;
 import com.darkneees.soapuserservice.entity.Social;
 import com.darkneees.soapuserservice.entity.User;
+import com.darkneees.soapuserservice.exception.UserNotFoundException;
+import com.darkneees.soapuserservice.mapper.ResponseMapperException;
+import com.darkneees.soapuserservice.mapper.ServiceStatusMapper;
 import com.darkneees.soapuserservice.mapper.UserMapper;
 import com.darkneees.soapuserservice.repository.UserRepository;
 import com.darkneees.soapuserservice.service.UserServiceImpl;
@@ -13,9 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import users_soap.api.RoleInfo;
-import users_soap.api.SocialInfo;
-import users_soap.api.UserInfo;
+import users_soap.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -240,6 +241,15 @@ class SoapUserServiceImplApplicationTests {
         System.out.println(user);
 
 
+    }
+
+    @Test
+    public void TestMapperServiceStatus(){
+        UserNotFoundException exception = new UserNotFoundException("dark");
+        DeleteUserByUsernameResponse response = ResponseMapperException.INSTANCE.toDeleteUserByUsernameResponse(exception);
+
+        System.out.println(response.getStatus().isSuccess());
+        System.out.println(response.getStatus().getErrors());
     }
 
 }

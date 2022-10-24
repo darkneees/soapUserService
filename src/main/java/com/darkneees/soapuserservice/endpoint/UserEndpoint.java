@@ -1,6 +1,6 @@
 package com.darkneees.soapuserservice.endpoint;
 
-import com.darkneees.soapuserservice.exception.UserAlreadyExistException;
+import com.darkneees.soapuserservice.exception.*;
 import com.darkneees.soapuserservice.mapper.*;
 import com.darkneees.soapuserservice.service.RoleServiceImpl;
 import com.darkneees.soapuserservice.service.UserServiceImpl;
@@ -11,8 +11,6 @@ import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 import users_soap.api.*;
-
-import java.util.function.Function;
 
 @Endpoint
 public class UserEndpoint {
@@ -74,18 +72,10 @@ public class UserEndpoint {
                     serviceStatus.setSuccess(true);
 
                     AddUserResponse response = new AddUserResponse();
-                    response.setServiceStatus(serviceStatus);
+                    response.setStatus(serviceStatus);
                     return response;
                 })
-                .exceptionally((ex) -> {
-            AddUserResponse response = new AddUserResponse();
-            ServiceStatus serviceStatus = new ServiceStatus();
-            serviceStatus.setSuccess(false);
-            serviceStatus.setErrors(ex.getMessage());
-
-            response.setServiceStatus(serviceStatus);
-            return response;
-        }).join();
+                .exceptionally(ResponseMapperException.INSTANCE::toAddUserResponse).join();
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getUserByUsernameRequest")
@@ -103,18 +93,8 @@ public class UserEndpoint {
                     response.setStatus(serviceStatus);
                     response.setUsers(UserMapper.INSTANCE.toUserInfo(user));
                     return response;
-
                 })
-                .exceptionally((ex) -> {
-                    ServiceStatus serviceStatus = new ServiceStatus();
-                    serviceStatus.setSuccess(false);
-                    serviceStatus.setErrors(ex.getMessage());
-
-                    GetUserByUsernameResponse response = new GetUserByUsernameResponse();
-                    response.setStatus(serviceStatus);
-
-                    return response;
-                }).join();
+                .exceptionally(ResponseMapperException.INSTANCE::toGetUserByUsernameResponse).join();
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "deleteUserByUsernameRequest")
@@ -130,19 +110,8 @@ public class UserEndpoint {
 
                     response.setStatus(serviceStatus);
                     return response;
-
                 })
-                .exceptionally((ex) -> {
-
-                    ServiceStatus serviceStatus = new ServiceStatus();
-                    serviceStatus.setSuccess(false);
-                    serviceStatus.setErrors(ex.getMessage());
-
-                    DeleteUserByUsernameResponse response = new DeleteUserByUsernameResponse();
-                    response.setStatus(serviceStatus);
-
-                    return response;
-                }).join();
+                .exceptionally(ResponseMapperException.INSTANCE::toDeleteUserByUsernameResponse).join();
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "deleteRoleByUserRequest")
@@ -160,16 +129,7 @@ public class UserEndpoint {
                     response.setStatus(serviceStatus);
                     return response;
                 })
-                .exceptionally((ex) -> {
-                    ServiceStatus serviceStatus = new ServiceStatus();
-                    serviceStatus.setSuccess(false);
-                    serviceStatus.setErrors(ex.getMessage());
-
-                    DeleteRoleByUserResponse response = new DeleteRoleByUserResponse();
-                    response.setStatus(serviceStatus);
-
-                    return response;
-                }).join();
+                .exceptionally(ResponseMapperException.INSTANCE::toDeleteRoleByUserResponse).join();
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "addUserRolesRequest")
@@ -186,16 +146,7 @@ public class UserEndpoint {
             response.setStatus(serviceStatus);
             return response;
         })
-                .exceptionally((ex) -> {
-                    ServiceStatus serviceStatus = new ServiceStatus();
-                    serviceStatus.setSuccess(false);
-                    serviceStatus.setErrors(ex.getMessage());
-
-                    AddUserRolesResponse response = new AddUserRolesResponse();
-                    response.setStatus(serviceStatus);
-
-                    return response;
-                }).join();
+                .exceptionally(ResponseMapperException.INSTANCE::toAddUserRolesResponse).join();
     }
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "addRoleRequest")
     @ResponsePayload
@@ -209,16 +160,7 @@ public class UserEndpoint {
                     response.setStatus(serviceStatus);
                     return response;
                 })
-                .exceptionally((ex) -> {
-                    ServiceStatus serviceStatus = new ServiceStatus();
-                    serviceStatus.setSuccess(false);
-                    serviceStatus.setErrors(ex.getMessage());
-
-                    AddRoleResponse response = new AddRoleResponse();
-                    response.setStatus(serviceStatus);
-
-                    return response;
-                }).join();
+                .exceptionally(ResponseMapperException.INSTANCE::toAddRoleResponse).join();
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "editUserByUsernameRequest")
@@ -232,17 +174,7 @@ public class UserEndpoint {
                     EditUserByUsernameResponse response = new EditUserByUsernameResponse();
                     response.setStatus(serviceStatus);
                     return response;
-                }).exceptionally((ex) -> {
-
-                    ServiceStatus serviceStatus = new ServiceStatus();
-                    serviceStatus.setSuccess(false);
-                    serviceStatus.setErrors(ex.getMessage());
-
-                    EditUserByUsernameResponse response = new EditUserByUsernameResponse();
-                    response.setStatus(serviceStatus);
-
-                    return response;
-                }).join();
+                }).exceptionally(ResponseMapperException.INSTANCE::toEditUserByUsernameResponse).join();
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "addSocialRequest")
@@ -258,16 +190,7 @@ public class UserEndpoint {
                     response.setStatus(serviceStatus);
                     return response;
                 })
-                .exceptionally((ex) -> {
-                    ServiceStatus serviceStatus = new ServiceStatus();
-                    serviceStatus.setSuccess(false);
-                    serviceStatus.setErrors(ex.getMessage());
-
-                    AddSocialResponse response = new AddSocialResponse();
-                    response.setStatus(serviceStatus);
-
-                    return response;
-                }).join();
+                .exceptionally(ResponseMapperException.INSTANCE::toAddSocialResponse).join();
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "deleteSocialRequest")
@@ -295,13 +218,4 @@ public class UserEndpoint {
                 }).join();
     }
 
-//    private static final Function<Throwable, ? extends DeleteSocialResponse>
-//        serviceStatusException = throwable -> {
-//            ServiceStatus serviceStatus = new ServiceStatus();
-//            serviceStatus.setSuccess(true);
-//            serviceStatus.setErrors(throwable.getMessage());
-//            DeleteSocialResponse response = new DeleteSocialResponse();
-//            response.setStatus(serviceStatus);
-//            return response;
-//    };
 }
