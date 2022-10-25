@@ -38,6 +38,7 @@ public class UserEndpoint {
                     GetAllUsersResponse response = new GetAllUsersResponse();
                     response.setStatus(serviceStatus);
                     response.getUsers().addAll(ListUserMapper.INSTANCE.toListUserInfos(users));
+                    log.info("Get all users");
                     return response;
                 }).join();
     }
@@ -55,8 +56,8 @@ public class UserEndpoint {
                     GetAllRolesResponse response = new GetAllRolesResponse();
                     response.setStatus(serviceStatus);
                     response.getRoles().addAll(RoleListMapper.INSTANCE.toRoleInfo(roles));
+                    log.info("Get all roles");
                     return response;
-
                 }).join();
 
     }
@@ -73,6 +74,7 @@ public class UserEndpoint {
 
                     AddUserResponse response = new AddUserResponse();
                     response.setStatus(serviceStatus);
+                    log.info("Add user: {}", UserMapper.INSTANCE.toUser(request.getUser()));
                     return response;
                 })
                 .exceptionally(ResponseMapperException.INSTANCE::toAddUserResponse).join();
@@ -92,6 +94,7 @@ public class UserEndpoint {
                     GetUserByUsernameResponse response = new GetUserByUsernameResponse();
                     response.setStatus(serviceStatus);
                     response.setUsers(UserMapper.INSTANCE.toUserInfo(user));
+                    log.info("Get user by username: {}", request.getUsername());
                     return response;
                 })
                 .exceptionally(ResponseMapperException.INSTANCE::toGetUserByUsernameResponse).join();
