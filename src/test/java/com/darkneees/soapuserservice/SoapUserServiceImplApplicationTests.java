@@ -49,7 +49,7 @@ class SoapUserServiceImplApplicationTests {
                 true
         );
 
-        userService.addUser(user).join();
+        userService.addUser(user);
 
         User savedUser = userService.getUserByUsernameService(user.getUsername()).join();
         log.info(savedUser.toString());
