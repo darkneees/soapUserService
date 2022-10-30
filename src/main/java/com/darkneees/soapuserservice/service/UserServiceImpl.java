@@ -38,21 +38,22 @@ public class UserServiceImpl implements UserService {
                         .stream().map(RoleRef::getId)
                         .collect(Collectors.toSet()));
                 roleSet.forEach((role) -> user.getRoleSet().add(role));
-
+                log.info("Get user: {}", user);
                 return user;
             } else throw new UserNotFoundException(username);
     }
 
-    @Override
     @Async
+    @Override
     public CompletableFuture<Void> addUser(User user) {
         return CompletableFuture.runAsync(() -> {
-            if(!userRepository.existsById(user.getUsername()))
-                userRepository.save(user);
+            if(!userRepository.existsById(user.getUsername())){
+                  User savedUser = userRepository.save(user);
+                  log.info("Saved user: {}", savedUser);
+            }
             else throw new UserAlreadyExistException(user.getUsername());
         });
     }
-
     @Override
     @Async
     public CompletableFuture<Void> editUser(User user) {
@@ -60,8 +61,8 @@ public class UserServiceImpl implements UserService {
             user.getRoleRefSet().addAll(user.getRoleSet().stream()
                     .map((el) -> new RoleRef(el.getId()))
                     .collect(Collectors.toSet()));
-            System.out.println(user.getRoleRefSet().toString());
-            userRepository.save(user);
+            User editUser = userRepository.save(user);
+            log.info("Edit user: {}", editUser);
         });
     }
 
@@ -69,7 +70,10 @@ public class UserServiceImpl implements UserService {
     @Async
     public CompletableFuture<Void> deleteUserByUsername(String username) {
         return CompletableFuture.runAsync(() -> {
-            if(userRepository.findById(username).isPresent()) userRepository.deleteById(username);
+            if(userRepository.findById(username).isPresent()) {
+                userRepository.deleteById(username);
+                log.info("Deleted in database user with username: {}", username);
+            }
             else throw new UserNotFoundException(username);
         });
     }
@@ -85,17 +89,13 @@ public class UserServiceImpl implements UserService {
         return CompletableFuture.runAsync(() -> {
             User user = getUserByUsername(username);
             user.setNew(false);
-            if(user.getRoleRefSet().remove(new RoleRef(id))) userRepository.save(user);
+            if(user.getRoleRefSet().remove(new RoleRef(id))) {
+                userRepository.save(user);
+                log.info("Delete role with id: {} in user with username: {}", id, username);
+            }
             else throw new UserRoleNotFoundException(username, id);
         });
     }
-
-    @Override
-    @Async
-    public CompletableFuture<Void> deleteAll() {
-        return CompletableFuture.runAsync(userRepository::deleteAll);
-    }
-
     @Override
     @Async
     public CompletableFuture<Void> addRole(String username, long role) {
@@ -104,6 +104,7 @@ public class UserServiceImpl implements UserService {
             if(roleRepository.findById(role).isPresent()) {
                 user.getRoleRefSet().add(new RoleRef(role));
                 userRepository.save(user);
+                log.info("Add role with id: {}, for user with username: {}", role, username);
             } else throw new RoleNotFoundException(role);
 
         });
@@ -120,6 +121,7 @@ public class UserServiceImpl implements UserService {
         return CompletableFuture.runAsync(() -> {
             User user = getUserByUsername(username);
             user.getSocialSet().add(social);
+            log.info("Add social for user with username: {}, social: {}, {}", username, social.getIdentifierSocial(), social.getNameSocial());
             userRepository.save(user);
         });
     }
@@ -129,7 +131,10 @@ public class UserServiceImpl implements UserService {
         return CompletableFuture.runAsync(() -> {
             User user = getUserByUsername(username);
             if(user.getSocialSet()
-                    .removeIf((ef) -> ef.getIdentifierSocial().equals(identifierSocial))) userRepository.save(user);
+                    .removeIf((ef) -> ef.getIdentifierSocial().equals(identifierSocial))) {
+                userRepository.save(user);
+                log.info("Delete social by user with username: {}, social: {}", username, identifierSocial);
+            }
             else throw new SocialNotFoundException(identifierSocial);
         });
     }

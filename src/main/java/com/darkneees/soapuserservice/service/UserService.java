@@ -11,7 +11,6 @@ public interface UserService {
     CompletableFuture<Void> deleteUserByUsername(String username);
     CompletableFuture<Iterable<User>> getAllUsers();
     CompletableFuture<Void> deleteRoleByUsername(String username, Long id);
-    CompletableFuture<Void> deleteAll();
     CompletableFuture<Void> addRole(String username, long role);
     CompletableFuture<User> getUserByUsernameService(String username);
     CompletableFuture<Void> addSocial(Social social, String username);

@@ -27,6 +27,4 @@ public interface ResponseMapperException {
     DeleteSocialResponse toDeleteSocialResponse(Throwable exception);
     @Mapping(source = "exception", target = "status")
     GetUserByUsernameResponse toGetUserByUsernameResponse(Throwable exception);
-
-
 }

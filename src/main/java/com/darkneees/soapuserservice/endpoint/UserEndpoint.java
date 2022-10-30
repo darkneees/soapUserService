@@ -1,11 +1,8 @@
 package com.darkneees.soapuserservice.endpoint;
 
-import com.darkneees.soapuserservice.exception.*;
 import com.darkneees.soapuserservice.mapper.*;
 import com.darkneees.soapuserservice.service.RoleServiceImpl;
 import com.darkneees.soapuserservice.service.UserServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
@@ -15,7 +12,6 @@ import users_soap.api.*;
 @Endpoint
 public class UserEndpoint {
 
-    private static final Logger log = LoggerFactory.getLogger(UserEndpoint.class);
     private static final String NAMESPACE_URI="http://users-soap/api/";
     private final UserServiceImpl userService;
     private final RoleServiceImpl roleService;
@@ -38,7 +34,6 @@ public class UserEndpoint {
                     GetAllUsersResponse response = new GetAllUsersResponse();
                     response.setStatus(serviceStatus);
                     response.getUsers().addAll(ListUserMapper.INSTANCE.toListUserInfos(users));
-                    log.info("Get all users");
                     return response;
                 }).join();
     }
@@ -56,7 +51,6 @@ public class UserEndpoint {
                     GetAllRolesResponse response = new GetAllRolesResponse();
                     response.setStatus(serviceStatus);
                     response.getRoles().addAll(RoleListMapper.INSTANCE.toRoleInfo(roles));
-                    log.info("Get all roles");
                     return response;
                 }).join();
 
@@ -74,7 +68,6 @@ public class UserEndpoint {
 
                     AddUserResponse response = new AddUserResponse();
                     response.setStatus(serviceStatus);
-                    log.info("Add user: {}", UserMapper.INSTANCE.toUser(request.getUser()));
                     return response;
                 })
                 .exceptionally(ResponseMapperException.INSTANCE::toAddUserResponse).join();
@@ -87,14 +80,12 @@ public class UserEndpoint {
         return userService.getUserByUsernameService(request.getUsername())
                 .thenApply((user) -> {
 
-                    log.info("getUserByUsername");
                     ServiceStatus serviceStatus = new ServiceStatus();
                     serviceStatus.setSuccess(true);
 
                     GetUserByUsernameResponse response = new GetUserByUsernameResponse();
                     response.setStatus(serviceStatus);
                     response.setUsers(UserMapper.INSTANCE.toUserInfo(user));
-                    log.info("Get user by username: {}", request.getUsername());
                     return response;
                 })
                 .exceptionally(ResponseMapperException.INSTANCE::toGetUserByUsernameResponse).join();
@@ -209,16 +200,6 @@ public class UserEndpoint {
                     response.setStatus(serviceStatus);
                     return response;
                 })
-                .exceptionally((ex) -> {
-                    ServiceStatus serviceStatus = new ServiceStatus();
-                    serviceStatus.setSuccess(false);
-                    serviceStatus.setErrors(ex.getMessage());
-
-                    DeleteSocialResponse response = new DeleteSocialResponse();
-                    response.setStatus(serviceStatus);
-
-                    return response;
-                }).join();
+                .exceptionally(ResponseMapperException.INSTANCE::toDeleteSocialResponse).join();
     }
-
 }
