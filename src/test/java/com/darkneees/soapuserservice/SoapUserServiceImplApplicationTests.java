@@ -244,6 +244,7 @@ class SoapUserServiceImplApplicationTests {
     }
 
     @Test
+    @Disabled
     public void TestMapperServiceStatus(){
         UserNotFoundException exception = new UserNotFoundException("dark");
         DeleteUserByUsernameResponse response = ResponseMapperException.INSTANCE.toDeleteUserByUsernameResponse(exception);
